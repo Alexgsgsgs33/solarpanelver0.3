@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema Solar Inteligente</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/charts.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon">☀️</div>
+                <div class="logo-text">
+                    <span class="brand">Solar Inteligente</span>
+                    <span class="version">v3.0</span>
+                </div>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="system-status">
+                <div class="status-indicator online">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Sistema Online</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-nav">
+                <li class="nav-item active">
+                    <a href="#dashboard" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Dashboard Principal</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#panels" class="nav-link">
+                        <span class="nav-icon">☀️</span>
+                        <span class="nav-text">Paneles Solares</span>
+                        <span class="nav-badge" id="panelsOnline">6/6</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#batteries" class="nav-link">
+                        <span class="nav-icon">🔋</span>
+                        <span class="nav-text">Sistema de Baterías</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#consumption" class="nav-link">
+                        <span class="nav-icon">⚡</span>
+                        <span class="nav-text">Consumo Energético</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#reports" class="nav-link">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-text">Reportes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#settings" class="nav-link">
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-text">Configuración</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="energy-savings">
+                <div class="savings-label">Energía Ahorrada</div>
+                <div class="savings-value" id="energySaved">245.8 kWh</div>
+            </div>
+            <button class="logout-btn" onclick="auth.logout()">
+                <span class="logout-icon">🚪</span>
+                <span class="logout-text">Cerrar Sesión</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <h1 class="page-title">Sistema Solar Inteligente</h1>
+                <div class="breadcrumb">
+                    <span>ITSSNP</span>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-active">Monitoreo en Tiempo Real</span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="system-time">
+                    <span class="time-icon">🕒</span>
+                    <span id="currentTime">--:--:--</span>
+                    <span id="currentDate">--/--/----</span>
+                </div>
+                <div class="header-actions">
+                    <button class="header-btn" onclick="notifications.toggle()">
+                        <span class="btn-icon">🔔</span>
+                        <span class="btn-badge" id="alertCount">0</span>
+                    </button>
+                    <button class="header-btn" onclick="theme.toggle()">
+                        <span class="btn-icon" id="themeIcon">🌙</span>
+                    </button>
+                    <button class="header-btn" onclick="fullscreen.toggle()">
+                        <span class="btn-icon">⛶</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Estado General del Sistema -->
+            <section class="system-overview">
+                <div class="section-header">
+                    <h2 class="section-title">Estado General del Sistema</h2>
+                    <div class="last-update">
+                        <span class="update-icon">🔄</span>
+                        Actualizado: <span id="lastUpdateTime">hace 5 seg</span>
+                    </div>
+                </div>
+
+                <div class="system-metrics">
+                    <div class="metric-card large">
+                        <div class="metric-header">
+                            <h3 class="metric-title">Voltaje del Sistema</h3>
+                            <div class="metric-trend" id="voltageTrend">
+                                <span class="trend-icon">→</span>
+                                <span class="trend-text">Estable</span>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="systemVoltage">-- V</div>
+                        <div class="metric-range">
+                            <span class="range-min">0V</span>
+                            <div class="range-bar">
+                                <div class="range-fill" id="voltageFill"></div>
+                            </div>
+                            <span class="range-max">60V</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card large">
+                        <div class="metric-header">
+                            <h3 class="metric-title">Corriente</h3>
+                            <div class="metric-trend" id="currentTrend">
+                                <span class="trend-icon">→</span>
+                                <span class="trend-text">Estable</span>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="systemCurrent">-- A</div>
+                        <div class="metric-range">
+                            <span class="range-min">0A</span>
+                            <div class="range-bar">
+                                <div class="range-fill" id="currentFill"></div>
+                            </div>
+                            <span class="range-max">20A</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card large">
+                        <div class="metric-header">
+                            <h3 class="metric-title">Potencia</h3>
+                            <div class="metric-trend" id="powerTrend">
+                                <span class="trend-icon">→</span>
+                                <span class="trend-text">--</span>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="systemPower">-- W</div>
+                        <div class="metric-range">
+                            <span class="range-min">0W</span>
+                            <div class="range-bar">
+                                <div class="range-fill" id="powerFill"></div>
+                            </div>
+                            <span class="range-max">1200W</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card large">
+                        <div class="metric-header">
+                            <h3 class="metric-title">Modo de Operación</h3>
+                            <div class="metric-status" id="operationMode">
+                                <span class="status-dot"></span>
+                                <span class="status-text">--</span>
+                            </div>
+                        </div>
+                        <div class="metric-value" id="modeValue">--</div>
+                        <div class="mode-description" id="modeDescription">
+                            Estado del sistema no disponible
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gráficos y Visualización -->
+            <section class="charts-section">
+                <div class="charts-grid">
+                    <!-- Gráfico de Potencia -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Potencia (W) - Tiempo Real</h3>
+                            <div class="chart-actions">
+                                <select class="chart-filter" id="powerTimeRange">
+                                    <option value="1h">Última Hora</option>
+                                    <option value="6h" selected>Últimas 6 Horas</option>
+                                    <option value="24h">Últimas 24 Horas</option>
+                                </select>
+                                <button class="chart-action-btn" onclick="charts.exportPowerData()">
+                                    <span class="action-icon">📥</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="powerChart"></canvas>
+                        </div>
+                        <div class="chart-stats">
+                            <div class="chart-stat">
+                                <span class="stat-label">Máxima:</span>
+                                <span class="stat-value" id="maxPower">-- W</span>
+                            </div>
+                            <div class="chart-stat">
+                                <span class="stat-label">Mínima:</span>
+                                <span class="stat-value" id="minPower">-- W</span>
+                            </div>
+                            <div class="chart-stat">
+                                <span class="stat-label">Promedio:</span>
+                                <span class="stat-value" id="avgPower">-- W</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Eficiencia del Sistema -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Eficiencia del Sistema</h3>
+                            <div class="chart-actions">
+                                <button class="chart-action-btn" onclick="charts.refreshEfficiency()">
+                                    <span class="action-icon">🔄</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="efficiency-metrics">
+                            <div class="efficiency-item">
+                                <div class="efficiency-label">
+                                    <span class="label-icon">☀️</span>
+                                    Eficiencia Paneles
+                                </div>
+                                <div class="efficiency-value" id="panelEfficiency">--%</div>
+                                <div class="efficiency-bar">
+                                    <div class="efficiency-fill" id="panelEfficiencyFill"></div>
+                                </div>
+                            </div>
+                            <div class="efficiency-item">
+                                <div class="efficiency-label">
+                                    <span class="label-icon">🔋</span>
+                                    Eficiencia Baterías
+                                </div>
+                                <div class="efficiency-value" id="batteryEfficiency">--%</div>
+                                <div class="efficiency-bar">
+                                    <div class="efficiency-fill" id="batteryEfficiencyFill"></div>
+                                </div>
+                            </div>
+                            <div class="efficiency-item">
+                                <div class="efficiency-label">
+                                    <span class="label-icon">⚡</span>
+                                    Eficiencia Conversión
+                                </div>
+                                <div class="efficiency-value" id="conversionEfficiency">--%</div>
+                                <div class="efficiency-bar">
+                                    <div class="efficiency-fill" id="conversionEfficiencyFill"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Consumo y Sesiones -->
+            <section class="consumption-section">
+                <div class="consumption-grid">
+                    <!-- Sesiones de Carga -->
+                    <div class="consumption-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Sesiones de Carga de Dispositivos</h3>
+                            <button class="card-action" onclick="consumption.clearSessions()">
+                                <span class="action-icon">🗑️</span>
+                            </button>
+                        </div>
+                        
+                        <div class="total-energy">
+                            <span class="total-label">Total Energía Consumida:</span>
+                            <span class="total-value" id="totalEnergyConsumed">0.00 Wh</span>
+                        </div>
+
+                        <div class="sessions-list" id="sessionsList">
+                            <!-- Las sesiones se cargan dinámicamente -->
+                            <div class="no-sessions">
+                                <span class="no-data-icon">🔌</span>
+                                <p>No hay sesiones de carga activas</p>
+                            </div>
+                        </div>
+
+                        <div class="session-stats">
+                            <div class="session-stat">
+                                <span class="stat-label">Dispositivos Activos:</span>
+                                <span class="stat-value" id="activeDevices">0</span>
+                            </div>
+                            <div class="session-stat">
+                                <span class="stat-label">Tiempo Total:</span>
+                                <span class="stat-value" id="totalChargeTime">0h 0m</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Eventos y Alertas -->
+                    <div class="alerts-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Eventos y Alertas del Sistema</h3>
+                            <button class="card-action" onclick="alerts.clearAll()">
+                                <span class="action-icon">📋</span>
+                            </button>
+                        </div>
+
+                        <div class="alerts-list" id="alertsList">
+                            <div class="alert-item info">
+                                <div class="alert-icon">ℹ️</div>
+                                <div class="alert-content">
+                                    <div class="alert-title">Sistema Inicializado</div>
+                                    <div class="alert-time">Hace 2 minutos</div>
+                                </div>
+                            </div>
+                            <!-- Las alertas se cargan dinámicamente -->
+                        </div>
+
+                        <div class="alerts-summary">
+                            <div class="alert-summary-item critical">
+                                <span class="summary-label">Críticas:</span>
+                                <span class="summary-value" id="criticalAlerts">0</span>
+                            </div>
+                            <div class="alert-summary-item warning">
+                                <span class="summary-label">Advertencias:</span>
+                                <span class="summary-value" id="warningAlerts">0</span>
+                            </div>
+                            <div class="alert-summary-item info">
+                                <span class="summary-label">Informativas:</span>
+                                <span class="summary-value" id="infoAlerts">1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Información Ambiental -->
+            <section class="environment-section">
+                <div class="environment-grid">
+                    <div class="environment-card">
+                        <h3 class="card-title">Condiciones Ambientales</h3>
+                        <div class="environment-metrics">
+                            <div class="env-metric">
+                                <span class="env-icon">🌡️</span>
+                                <div class="env-info">
+                                    <span class="env-label">Temperatura</span>
+                                    <span class="env-value" id="temperature">--°C</span>
+                                </div>
+                            </div>
+                            <div class="env-metric">
+                                <span class="env-icon">💡</span>
+                                <div class="env-info">
+                                    <span class="env-label">Radiación Solar</span>
+                                    <span class="env-value" id="solarRadiation">-- W/m²</span>
+                                </div>
+                            </div>
+                            <div class="env-metric">
+                                <span class="env-icon">💧</span>
+                                <div class="env-info">
+                                    <span class="env-label">Humedad</span>
+                                    <span class="env-value" id="humidity">--%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions-card">
+                        <h3 class="card-title">Acciones Rápidas</h3>
+                        <div class="actions-grid">
+                            <button class="action-btn primary" onclick="system.exportReport()">
+                                <span class="action-icon">📥</span>
+                                Exportar Reporte
+                            </button>
+                            <button class="action-btn" onclick="system.refreshAll()">
+                                <span class="action-icon">🔄</span>
+                                Actualizar Datos
+                            </button>
+                            <button class="action-btn" onclick="system.manualOverride()">
+                                <span class="action-icon">🎛️</span>
+                                Control Manual
+                            </button>
+                            <button class="action-btn" onclick="system.systemDiagnostic()">
+                                <span class="action-icon">🔍</span>
+                                Diagnóstico
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Notification System -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="solar-spinner">
+                <div class="spinner-core"></div>
+                <div class="spinner-ray"></div>
+                <div class="spinner-ray"></div>
+                <div class="spinner-ray"></div>
+            </div>
+            <p>Conectando con el sistema solar...</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Proyecto Solar Inteligente | ITSSNP - Instituto Tecnológico Superior de la Sierra Norte de Puebla</p>
+            <div class="footer-info">
+                <span id="systemUptime">Tiempo activo: --</span>
+                <span id="dataPoints">Datos procesados: --</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/realtime-data.js"></script>
+    <script src="js/solar-charts.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
