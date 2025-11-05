@@ -4,130 +4,924 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema Solar Inteligente - ITSSNP</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/auth.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* ===== VARIABLES Y RESET ===== */
+        :root {
+            --royal-blue: #1e3a8a;
+            --royal-blue-light: #3b82f6;
+            --royal-blue-dark: #1e40af;
+            --wine: #7f1d1d;
+            --wine-light: #dc2626;
+            --white: #ffffff;
+            --off-white: #f8fafc;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--royal-blue) 0%, var(--wine) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+
+        /* ===== PÁGINA DE LOGIN ===== */
+        .login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-logo {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .login-title {
+            color: var(--royal-blue);
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--royal-blue);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--royal-blue) 0%, var(--wine) 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(30, 58, 138, 0.3);
+        }
+
+        .error-message {
+            color: var(--error);
+            margin-top: 15px;
+            padding: 10px;
+            background: #ffeaea;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .demo-credentials {
+            margin-top: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid var(--royal-blue);
+        }
+
+        .demo-credentials h3 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .demo-credentials p {
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* ===== DASHBOARD (OCULTO INICIALMENTE) ===== */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .dashboard-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-title {
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .header-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .header-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Contenido Principal */
+        .dashboard-content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Sistema de Métricas */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            border-left: 4px solid var(--royal-blue);
+        }
+
+        .metric-card.wine {
+            border-left-color: var(--wine);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+            margin: 10px 0;
+        }
+
+        .metric-card.wine .metric-value {
+            color: var(--wine);
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Gráficos */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            color: var(--royal-blue);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Sistema de Carga */
+        .charging-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: var(--royal-blue);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .charging-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: var(--off-white);
+            border-radius: var(--border-radius);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--royal-blue);
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Alertas */
+        .alerts-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .alerts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .alert-item {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--royal-blue);
+            background: var(--off-white);
+        }
+
+        .alert-item.warning {
+            border-left-color: var(--warning);
+            background: #fef3c7;
+        }
+
+        .alert-item.success {
+            border-left-color: var(--success);
+            background: #d1fae5;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .alert-time {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Controles */
+        .controls-section {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .control-btn {
+            background: var(--royal-blue);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .control-btn:hover {
+            background: var(--royal-blue-dark);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.secondary {
+            background: var(--wine);
+        }
+
+        .control-btn.secondary:hover {
+            background: var(--wine-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-content {
+                padding: 20px;
+            }
+            
+            .controls-section {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
-<body class="landing-page">
-    <div class="landing-container">
-        <!-- Background Elements -->
-        <div class="solar-background">
-            <div class="sun"></div>
-            <div class="planet planet-1"></div>
-            <div class="planet planet-2"></div>
-            <div class="planet planet-3"></div>
-        </div>
-
-        <nav class="landing-nav">
-            <div class="nav-brand">
-                <div class="logo">☀️</div>
-                <span class="brand-name">Sistema Solar Inteligente</span>
-            </div>
-            <div class="nav-actions">
-                <a href="login.html" class="btn btn-outline">Iniciar Sesión</a>
-                <a href="#demo" class="btn btn-primary">Ver Demo</a>
-            </div>
-        </nav>
-
-        <main class="landing-hero">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    Monitoreo Inteligente de 
-                    <span class="highlight">Energía Solar</span>
-                </h1>
-                <p class="hero-description">
-                    Sistema a escala para monitoreo en tiempo real de generación, 
-                    almacenamiento y consumo de energía solar fotovoltaica.
-                </p>
+<body>
+    <!-- Página de Login -->
+    <div id="loginPage" class="login-page">
+        <div class="login-container">
+            <div class="login-logo">☀️</div>
+            <h1 class="login-title">Sistema Solar Inteligente</h1>
+            <p class="login-subtitle">ITSSNP - Monitoreo en Tiempo Real</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" class="form-input" placeholder="admin" required>
+                </div>
                 
-                <div class="hero-stats">
-                    <div class="stat">
-                        <span class="stat-number">24/7</span>
-                        <span class="stat-label">Monitoreo</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">99.8%</span>
-                        <span class="stat-label">Precisión</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">0ms</span>
-                        <span class="stat-label">Tiempo Real</span>
-                    </div>
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" class="form-input" placeholder="••••••••" required>
                 </div>
-
-                <div class="hero-actions">
-                    <a href="login.html" class="btn btn-primary btn-large">
-                        <span class="btn-icon">🔐</span>
-                        Acceder al Sistema
-                    </a>
-                    <a href="#features" class="btn btn-secondary btn-large">
-                        <span class="btn-icon">ℹ️</span>
-                        Más Información
-                    </a>
-                </div>
+                
+                <button type="submit" class="login-btn">Iniciar Sesión</button>
+            </form>
+            
+            <div id="errorMessage" class="error-message">
+                Credenciales incorrectas. Intenta nuevamente.
             </div>
-
-            <div class="hero-visual">
-                <div class="system-preview">
-                    <div class="preview-panel">
-                        <div class="panel-header">
-                            <div class="panel-dots">
-                                <span style="background: #ef4444"></span>
-                                <span style="background: #f59e0b"></span>
-                                <span style="background: #10b981"></span>
-                            </div>
-                        </div>
-                        <div class="panel-content">
-                            <div class="preview-metrics">
-                                <div class="preview-metric">
-                                    <span class="metric-label">Voltaje</span>
-                                    <span class="metric-value">48.2V</span>
-                                </div>
-                                <div class="preview-metric">
-                                    <span class="metric-label">Corriente</span>
-                                    <span class="metric-value">12.5A</span>
-                                </div>
-                                <div class="preview-metric">
-                                    <span class="metric-label">Potencia</span>
-                                    <span class="metric-value">602W</span>
-                                </div>
-                            </div>
-                            <div class="preview-chart"></div>
-                        </div>
-                    </div>
-                </div>
+            
+            <div class="demo-credentials">
+                <h3>Credenciales de Demo:</h3>
+                <p><strong>Usuario:</strong> admin</p>
+                <p><strong>Contraseña:</strong> admin2608</p>
             </div>
-        </main>
-
-        <section id="features" class="features-section">
-            <div class="container">
-                <h2 class="section-title">Características del Sistema</h2>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">☀️</div>
-                        <h3>Generación Solar</h3>
-                        <p>Monitoreo en tiempo real de paneles fotovoltaicos y eficiencia energética.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🔋</div>
-                        <h3>Almacenamiento</h3>
-                        <p>Control inteligente de bancos de baterías y estado de carga.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">⚡</div>
-                        <h3>Consumo</h3>
-                        <p>Análisis detallado de consumo por dispositivos y sesiones de carga.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <footer class="landing-footer">
-            <div class="container">
-                <p>&copy; 2025 Proyecto Solar Inteligente | ITSSNP</p>
-            </div>
-        </footer>
+        </div>
     </div>
 
-    <script src="js/utils.js"></script>
+    <!-- Dashboard (oculto inicialmente) -->
+    <div id="dashboard" class="dashboard">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <h1 class="header-title">🚀 Sistema Solar Inteligente - ITSSNP</h1>
+            <div class="header-actions">
+                <span style="color: white;">Bienvenido, <span id="userDisplay">Admin</span></span>
+                <button class="header-btn" onclick="refreshData()">🔄 Actualizar</button>
+                <button class="header-btn" onclick="logout()">🚪 Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <!-- Contenido Principal -->
+        <main class="dashboard-content">
+            <!-- Estado General del Sistema -->
+            <section style="margin-bottom: 30px;">
+                <h2 style="color: white; margin-bottom: 20px; text-align: center;">Estado General del Sistema</h2>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Voltaje del Sistema</div>
+                        <div class="metric-value" id="voltageValue">-- V</div>
+                        <div class="metric-trend" id="voltageTrend">Estable</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">Corriente</div>
+                        <div class="metric-value" id="currentValue">-- A</div>
+                        <div class="metric-trend" id="currentTrend">Estable</div>
+                    </div>
+                    
+                    <div class="metric-card wine">
+                        <div class="metric-label">Potencia</div>
+                        <div class="metric-value" id="powerValue">-- W</div>
+                        <div class="metric-trend" id="powerTrend">--</div>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <div class="metric-label">Modo de Operación</div>
+                        <div class="metric-value" id="modeValue">--</div>
+                        <div class="metric-trend" id="modeStatus">Conectado</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gráficos -->
+            <section style="margin-bottom: 30px;">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Potencia (W) - Tiempo Real</h3>
+                            <button class="header-btn" style="background: var(--royal-blue);" onclick="exportData()">📥 Exportar</button>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="powerChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">Eficiencia del Sistema</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="efficiencyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sesiones de Carga -->
+            <section class="charging-section">
+                <h3 class="section-title">🔌 Sesiones de Carga de Dispositivos</h3>
+                
+                <div class="charging-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalEnergy">0.00 Wh</div>
+                        <div class="stat-label">Total Energía Consumida</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="activeDevices">0</div>
+                        <div class="stat-label">Dispositivos Activos</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="avgPower">-- W</div>
+                        <div class="stat-label">Potencia Promedio</div>
+                    </div>
+                </div>
+
+                <div style="background: var(--off-white); padding: 15px; border-radius: var(--border-radius);">
+                    <h4 style="margin-bottom: 10px; color: var(--royal-blue);">Dispositivos Conectados:</h4>
+                    <div id="devicesList">
+                        <p style="color: var(--text-secondary); text-align: center;">No hay dispositivos conectados</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Eventos y Alertas -->
+            <section class="alerts-section">
+                <h3 class="section-title">⚠️ Eventos y Alertas del Sistema</h3>
+                
+                <div class="alerts-grid">
+                    <div class="alert-item success">
+                        <div class="alert-title">Sistema Inicializado</div>
+                        <div class="alert-time" id="systemStartTime">--:--:--</div>
+                    </div>
+                    <div class="alert-item">
+                        <div class="alert-title">Monitoreo Activo</div>
+                        <div class="alert-time">Todos los sensores operativos</div>
+                    </div>
+                    <div class="alert-item warning">
+                        <div class="alert-title">Alerta de Rendimiento</div>
+                        <div class="alert-time">Verificar eficiencia paneles</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Controles -->
+            <section class="controls-section">
+                <button class="control-btn" onclick="refreshData()">🔄 Actualizar Datos</button>
+                <button class="control-btn secondary" onclick="exportData()">📥 Exportar Reporte</button>
+                <button class="control-btn" onclick="simulateDevice()">🔌 Simular Dispositivo</button>
+                <button class="control-btn secondary" onclick="systemDiagnostic()">🔍 Diagnóstico</button>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // ===== SISTEMA DE AUTENTICACIÓN =====
+        const validUsers = {
+            'admin': 'admin2608',
+            'operador': 'operador123',
+            'invitado': 'invitado456'
+        };
+
+        // Elementos del DOM
+        const loginPage = document.getElementById('loginPage');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const userDisplay = document.getElementById('userDisplay');
+
+        // Verificar si ya hay sesión activa
+        function checkSession() {
+            const savedUser = localStorage.getItem('solarUser');
+            if (savedUser && validUsers[savedUser]) {
+                showDashboard(savedUser);
+            }
+        }
+
+        // Manejar login
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (validUsers[username] === password) {
+                localStorage.setItem('solarUser', username);
+                showDashboard(username);
+            } else {
+                errorMessage.style.display = 'block';
+                document.getElementById('password').value = '';
+            }
+        });
+
+        // Mostrar dashboard
+        function showDashboard(username) {
+            loginPage.style.display = 'none';
+            dashboard.style.display = 'block';
+            userDisplay.textContent = username;
+            
+            // Inicializar sistema
+            initializeSystem();
+        }
+
+        // Cerrar sesión
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                localStorage.removeItem('solarUser');
+                dashboard.style.display = 'none';
+                loginPage.style.display = 'flex';
+                loginForm.reset();
+                errorMessage.style.display = 'none';
+            }
+        }
+
+        // ===== SISTEMA DE MONITOREO SOLAR =====
+        let powerChart, efficiencyChart;
+        let systemData = {
+            voltage: 0,
+            current: 0,
+            power: 0,
+            mode: 'Cargando',
+            devices: [],
+            lastUpdate: new Date()
+        };
+
+        function initializeSystem() {
+            initializeCharts();
+            startRealtimeUpdates();
+            updateSystemTime();
+        }
+
+        function initializeCharts() {
+            // Gráfico de Potencia
+            const powerCtx = document.getElementById('powerChart').getContext('2d');
+            powerChart = new Chart(powerCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Potencia (W)',
+                        data: [],
+                        borderColor: '#1e3a8a',
+                        backgroundColor: 'rgba(30, 58, 138, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.1)' },
+                            ticks: { callback: value => value + 'W' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Gráfico de Eficiencia
+            const efficiencyCtx = document.getElementById('efficiencyChart').getContext('2d');
+            efficiencyChart = new Chart(efficiencyCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Paneles', 'Baterías', 'Pérdidas'],
+                    datasets: [{
+                        data: [75, 20, 5],
+                        backgroundColor: ['#1e3a8a', '#10b981', '#6b7280'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function startRealtimeUpdates() {
+            // Actualizar cada 2 segundos
+            setInterval(updateSystemData, 2000);
+            updateSystemData(); // Primera actualización
+        }
+
+        function updateSystemData() {
+            // Simular datos del sistema solar
+            const now = new Date();
+            const hour = now.getHours();
+            
+            // Simular ciclo solar
+            let solarIntensity = 0;
+            if (hour >= 6 && hour <= 18) {
+                const solarHour = (hour - 6) + (now.getMinutes() / 60);
+                solarIntensity = Math.sin(solarHour * Math.PI / 12);
+            }
+
+            // Generar datos realistas
+            systemData.voltage = 48 + (Math.random() - 0.5) * 4;
+            systemData.current = solarIntensity * 10 + Math.random() * 3;
+            systemData.power = systemData.voltage * systemData.current;
+            systemData.lastUpdate = now;
+
+            // Determinar modo
+            if (solarIntensity > 0.5) {
+                systemData.mode = 'Generando';
+            } else if (systemData.power > 100) {
+                systemData.mode = 'Cargando';
+            } else {
+                systemData.mode = 'Standby';
+            }
+
+            // Actualizar UI
+            updateDashboard();
+            updateCharts();
+        }
+
+        function updateDashboard() {
+            // Actualizar métricas principales
+            document.getElementById('voltageValue').textContent = systemData.voltage.toFixed(1) + ' V';
+            document.getElementById('currentValue').textContent = systemData.current.toFixed(2) + ' A';
+            document.getElementById('powerValue').textContent = Math.round(systemData.power) + ' W';
+            document.getElementById('modeValue').textContent = systemData.mode;
+
+            // Actualizar tendencias
+            updateTrends();
+            
+            // Actualizar energía total
+            updateEnergyConsumption();
+        }
+
+        function updateTrends() {
+            const trends = ['↗ Subiendo', '→ Estable', '↘ Bajando'];
+            const randomTrend = trends[Math.floor(Math.random() * trends.length)];
+            
+            document.getElementById('powerTrend').textContent = randomTrend;
+            document.getElementById('voltageTrend').textContent = 'Estable';
+            document.getElementById('currentTrend').textContent = systemData.current > 5 ? '↗ Subiendo' : '→ Estable';
+        }
+
+        function updateCharts() {
+            // Actualizar gráfico de potencia
+            const now = new Date();
+            const timeLabel = now.toLocaleTimeString('es-MX', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            // Agregar nuevo punto de datos
+            powerChart.data.labels.push(timeLabel);
+            powerChart.data.datasets[0].data.push(systemData.power);
+
+            // Mantener solo los últimos 15 puntos
+            if (powerChart.data.labels.length > 15) {
+                powerChart.data.labels.shift();
+                powerChart.data.datasets[0].data.shift();
+            }
+
+            powerChart.update('none');
+
+            // Actualizar gráfico de eficiencia ocasionalmente
+            if (Math.random() < 0.1) {
+                efficiencyChart.data.datasets[0].data = [
+                    70 + Math.random() * 10,
+                    15 + Math.random() * 10,
+                    5 + Math.random() * 5
+                ];
+                efficiencyChart.update();
+            }
+        }
+
+        function updateEnergyConsumption() {
+            const totalEnergy = systemData.devices.reduce((sum, device) => sum + device.energy, 0);
+            document.getElementById('totalEnergy').textContent = totalEnergy.toFixed(2) + ' Wh';
+            
+            const avgPower = systemData.devices.length > 0 ? 
+                systemData.devices.reduce((sum, device) => sum + device.power, 0) / systemData.devices.length : 0;
+            document.getElementById('avgPower').textContent = avgPower.toFixed(1) + ' W';
+            
+            document.getElementById('activeDevices').textContent = systemData.devices.length;
+        }
+
+        function updateSystemTime() {
+            const now = new Date();
+            document.getElementById('systemStartTime').textContent = now.toLocaleTimeString('es-MX');
+        }
+
+        // ===== FUNCIONES DE CONTROL =====
+        function refreshData() {
+            updateSystemData();
+            showNotification('✅ Datos actualizados correctamente');
+        }
+
+        function exportData() {
+            const report = {
+                fecha: new Date().toISOString(),
+                voltaje: systemData.voltage,
+                corriente: systemData.current,
+                potencia: systemData.power,
+                modo: systemData.mode,
+                dispositivos: systemData.devices.length,
+                energiaTotal: systemData.devices.reduce((sum, d) => sum + d.energy, 0)
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(report, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "reporte_solar.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+
+            showNotification('📥 Reporte exportado correctamente');
+        }
+
+        function simulateDevice() {
+            const devices = [
+                { name: 'Laptop Dell', power: 65, energy: 0 },
+                { name: 'Teléfono Samsung', power: 18, energy: 0 },
+                { name: 'Tablet iPad', power: 32, energy: 0 },
+                { name: 'Router WiFi', power: 12, energy: 0 },
+                { name: 'Cámara Seguridad', power: 8, energy: 0 }
+            ];
+
+            const device = devices[Math.floor(Math.random() * devices.length)];
+            device.energy = (device.power * (0.5 + Math.random())).toFixed(2);
+            
+            systemData.devices.push(device);
+            updateDevicesList();
+            updateEnergyConsumption();
+            
+            showNotification(`🔌 ${device.name} conectado (${device.power}W)`);
+        }
+
+        function updateDevicesList() {
+            const devicesList = document.getElementById('devicesList');
+            
+            if (systemData.devices.length === 0) {
+                devicesList.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">No hay dispositivos conectados</p>';
+                return;
+            }
+
+            devicesList.innerHTML = systemData.devices.map(device => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #e1e1e1;">
+                    <span>${device.name}</span>
+                    <span style="color: var(--royal-blue); font-weight: 600;">${device.power}W</span>
+                </div>
+            `).join('');
+        }
+
+        function systemDiagnostic() {
+            const diagnostics = [
+                '✅ Paneles solares: Óptimo',
+                '✅ Controlador MPPT: Estable',
+                '✅ Baterías: 85% carga',
+                '✅ Inversor: Funcionando',
+                '⚠️ Eficiencia: 92% (mejorable)',
+                '✅ Sensores: Todos activos'
+            ];
+
+            showNotification('🔍 Diagnóstico del sistema completado');
+            
+            // Mostrar resultados en alertas
+            const alertsGrid = document.querySelector('.alerts-grid');
+            alertsGrid.innerHTML = diagnostics.map(diag => `
+                <div class="alert-item ${diag.includes('⚠️') ? 'warning' : 'success'}">
+                    <div class="alert-title">${diag.replace('✅ ', '').replace('⚠️ ', '')}</div>
+                    <div class="alert-time">${new Date().toLocaleTimeString('es-MX')}</div>
+                </div>
+            `).join('');
+        }
+
+        function showNotification(message) {
+            // Crear notificación temporal
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: white;
+                color: var(--royal-blue);
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                z-index: 1000;
+                font-weight: 500;
+                border-left: 4px solid var(--royal-blue);
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSession();
+            
+            // Configurar auto-focus en el campo de usuario
+            document.getElementById('username').focus();
+            
+            // Permitir login con Enter
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loginForm.dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+    </script>
 </body>
 </html>
