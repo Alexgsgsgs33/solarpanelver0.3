@@ -1,0 +1,192 @@
+/* ===== ESTILOS PARA GRÁFICOS ===== */
+
+.charts-section {
+    margin-bottom: var(--space-2xl);
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-xl);
+}
+
+.chart-card {
+    background: var(--bg-card);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-xl);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-lg);
+}
+
+.chart-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--royal-blue);
+    margin: 0;
+}
+
+.chart-actions {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+}
+
+.chart-filter {
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background: var(--white);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+}
+
+.chart-action-btn {
+    background: var(--light-gray);
+    border: none;
+    padding: var(--space-sm);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+}
+
+.chart-action-btn:hover {
+    background: var(--royal-blue);
+    color: white;
+}
+
+.action-icon {
+    font-size: var(--font-size-lg);
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+    margin-bottom: var(--space-lg);
+}
+
+/* Chart Stats */
+.chart-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--border-color);
+}
+
+.chart-stat {
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+.stat-value {
+    display: block;
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--royal-blue);
+}
+
+/* Efficiency Metrics */
+.efficiency-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.efficiency-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.efficiency-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+}
+
+.label-icon {
+    font-size: var(--font-size-lg);
+}
+
+.efficiency-value {
+    font-size: var(--font-size-2xl);
+    font-weight: 800;
+    color: var(--royal-blue);
+    text-align: center;
+}
+
+.efficiency-bar {
+    height: 8px;
+    background: var(--light-gray);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.efficiency-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--royal-blue), var(--wine));
+    border-radius: 4px;
+    transition: width var(--transition-slow);
+}
+
+/* Custom Chart.js Styles */
+.chartjs-render-monitor {
+    border-radius: var(--border-radius);
+}
+
+/* Power Chart Specific */
+.power-chart {
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+}
+
+/* Distribution Chart Specific */
+.distribution-chart {
+    background: linear-gradient(180deg, rgba(127, 29, 29, 0.1) 0%, rgba(127, 29, 29, 0.05) 100%);
+}
+
+/* Real-time Chart Specific */
+.realtime-chart {
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+}
+
+/* Responsive Charts */
+@media (max-width: 768px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-stats {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        gap: var(--space-md);
+        align-items: flex-start;
+    }
+    
+    .chart-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
